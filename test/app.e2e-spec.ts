@@ -6,7 +6,6 @@ import * as request from 'supertest';
 
 describe('AppController (e2e)', () => {
     let app: INestApplication;
-    let server;
 
     beforeAll(async () => {
         const moduleFixture: TestingModule = await Test.createTestingModule({
@@ -17,19 +16,14 @@ describe('AppController (e2e)', () => {
         app.useGlobalFilters(new NotFoundExceptionFilter());
 
         await app.init();
-        server = app.getHttpServer();
     });
 
     afterAll(async () => {
-        await server.close();
-        await server.disconnect();
-        await app.close().then(() => {
-            console.log('close');
-        });
+        await app.close();
     });
 
     it('throws error if URL is invalid', async done => {
-        const response = await request(server)
+        const response = await request(app.getHttpServer())
             .get('/')
             .expect(404);
 
