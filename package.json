@@ -1,6 +1,6 @@
 {
   "name": "bnext-challenge-backend-ts",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "BNEXT challenge (Typescript): BNEXT Backend ",
   "author": "José Manuel Carretero <josemanuelcarreterocuenca@gmail.com>",
   "license": "MIT",
