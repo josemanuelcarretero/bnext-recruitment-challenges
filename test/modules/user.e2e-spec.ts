@@ -6,6 +6,8 @@ import * as request from 'supertest';
 import { ValidationErrorFilter } from '../../src/common/filters/validation-error.filter';
 import { UserRepositoryTest } from './user-repository-test';
 import { PhoneValidationFilter } from '../../src/common/filters/phone-validation.filter';
+import { PhoneValidationService } from '../../src/modules/phone-validation/phone-validation.service';
+import { InvalidPhoneException } from '../../src/modules/phone-validation/exceptions/invalid-phone.exception';
 
 describe('User Module (e2e)', () => {
     let app: INestApplication;
@@ -67,12 +69,25 @@ describe('User Module (e2e)', () => {
         }
     ];
 
+    class MockPhoneValidationService {
+        async verifyPhone(value: string): Promise<string> {
+            if (value.startsWith('+34')) {
+                return value;
+            } else {
+                throw new InvalidPhoneException();
+            }
+        }
+    }
+
     beforeAll(async () => {
         process.env.NODE_ENV = 'testing';
 
         const moduleFixture: TestingModule = await Test.createTestingModule({
             imports: [AppModule, HttpModule]
-        }).compile();
+        })
+            .overrideProvider(PhoneValidationService)
+            .useClass(MockPhoneValidationService)
+            .compile();
 
         app = moduleFixture.createNestApplication();
         app.useGlobalFilters(new NotFoundExceptionFilter());
