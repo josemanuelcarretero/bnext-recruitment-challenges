@@ -3,6 +3,7 @@ import { HttpModule, INestApplication } from '@nestjs/common';
 import { AppModule } from '../../src/app.module';
 import { NotFoundExceptionFilter } from '../../src/common/filters/not-found-exception.filter';
 import * as request from 'supertest';
+import { ValidationErrorFilter } from '../../src/common/filters/validation-error.filter';
 import { UserRepositoryTest } from './user-repository-test';
 import { ContactRepositoryTest } from './contact-repository-test';
 
@@ -75,6 +76,7 @@ describe('Contact Module (e2e)', () => {
 
         app = moduleFixture.createNestApplication();
         app.useGlobalFilters(new NotFoundExceptionFilter());
+        app.useGlobalFilters(new ValidationErrorFilter());
 
         userRepositoryTest = new UserRepositoryTest(app);
         contactRepositoryTest = new ContactRepositoryTest(app);
