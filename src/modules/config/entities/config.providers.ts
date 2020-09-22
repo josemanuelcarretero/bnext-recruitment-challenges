@@ -18,6 +18,11 @@ function loadEnvironment(): AppConfig {
             username: process.env.dbusername,
             password: process.env.dbpassword,
             database: process.env.dbdatabase
+        },
+        verificationPhone: {
+            type: process.env.vftype,
+            userId: process.env.vfuserid,
+            apiKey: process.env.vfapikey
         }
     };
 }

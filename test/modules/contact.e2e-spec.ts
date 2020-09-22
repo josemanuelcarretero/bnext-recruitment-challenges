@@ -6,6 +6,7 @@ import * as request from 'supertest';
 import { ValidationErrorFilter } from '../../src/common/filters/validation-error.filter';
 import { UserRepositoryTest } from './user-repository-test';
 import { ContactRepositoryTest } from './contact-repository-test';
+import { PhoneValidationFilter } from '../../src/common/filters/phone-validation.filter';
 
 describe('Contact Module (e2e)', () => {
     let app: INestApplication;
@@ -77,6 +78,7 @@ describe('Contact Module (e2e)', () => {
         app = moduleFixture.createNestApplication();
         app.useGlobalFilters(new NotFoundExceptionFilter());
         app.useGlobalFilters(new ValidationErrorFilter());
+        app.useGlobalFilters(new PhoneValidationFilter());
 
         userRepositoryTest = new UserRepositoryTest(app);
         contactRepositoryTest = new ContactRepositoryTest(app);
