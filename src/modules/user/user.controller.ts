@@ -14,10 +14,14 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { invalidRequestParameterFactoryPipe } from '../../common/pipes/invalid-request-parameter.factory-pipe';
 import { CustomParseIntPipe } from '../../common/pipes/custom-parse-int-pipe';
+import { PhoneValidationService } from '../phone-validation/phone-validation.service';
 
 @Controller('api/v1/users')
 export class UserController {
-    constructor(private userService: UserService) {}
+    constructor(
+        private userService: UserService,
+        private phoneVerificationService: PhoneValidationService
+    ) {}
 
     @Get()
     async listUsers(): Promise<User[]> {
@@ -28,7 +32,11 @@ export class UserController {
     @HttpCode(201)
     @UsePipes(new ValidationPipe({ exceptionFactory: invalidRequestParameterFactoryPipe }))
     async createUser(@Body() createUserDto: CreateUserDto): Promise<User> {
-        return await this.userService.create(createUserDto);
+        const verifiedPhone = await this.phoneVerificationService.verifyPhone(createUserDto.phone);
+        return await this.userService.create({
+            ...createUserDto,
+            phone: verifiedPhone
+        });
     }
 
     @Get(':id')

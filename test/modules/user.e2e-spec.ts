@@ -5,6 +5,7 @@ import { NotFoundExceptionFilter } from '../../src/common/filters/not-found-exce
 import * as request from 'supertest';
 import { ValidationErrorFilter } from '../../src/common/filters/validation-error.filter';
 import { UserRepositoryTest } from './user-repository-test';
+import { PhoneValidationFilter } from '../../src/common/filters/phone-validation.filter';
 
 describe('User Module (e2e)', () => {
     let app: INestApplication;
@@ -76,6 +77,7 @@ describe('User Module (e2e)', () => {
         app = moduleFixture.createNestApplication();
         app.useGlobalFilters(new NotFoundExceptionFilter());
         app.useGlobalFilters(new ValidationErrorFilter());
+        app.useGlobalFilters(new PhoneValidationFilter());
         userRepositoryTest = new UserRepositoryTest(app);
 
         await app.init();
@@ -172,9 +174,14 @@ describe('User Module (e2e)', () => {
         });
 
         it('(POST /api/v1/users) Throws error if you try to create an user with invalid phone(external service)', async done => {
-            await userRepositoryTest.createInvalidUser(invalidUserDataList[5], {
-                phone: [`phone format is invalid`]
-            });
+            const { body } = await request(app.getHttpServer())
+                .post('/api/v1/users')
+                .send(invalidUserDataList[5])
+                .expect(400);
+
+            expect(body.statusCode).toEqual(400);
+            expect(body.error).toEqual('invalid_phone_number');
+
             done();
         });
 
