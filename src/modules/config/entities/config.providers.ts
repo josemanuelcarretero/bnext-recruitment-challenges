@@ -4,6 +4,8 @@ import { AppConfig } from './app-config.entity';
 function loadEnvironment(): AppConfig {
     if (process.env.NODE_ENV === 'production') {
         config({ path: 'env/production.env' });
+    } else if (process.env.NODE_ENV === 'testing') {
+        config({ path: 'env/testing.env' });
     } else {
         config({ path: 'env/development.env' });
     }
