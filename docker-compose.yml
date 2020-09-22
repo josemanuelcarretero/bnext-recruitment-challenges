@@ -1,0 +1,53 @@
+version: '3.1'
+
+services:
+  database:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'bnextDB'
+      MYSQL_USER: 'bnext'
+      MYSQL_PASSWORD: 'bnext'
+      MYSQL_ROOT_PASSWORD: 'bnext'
+    ports:
+      - 3306:3306
+    expose:
+      - 3306
+    volumes:
+      - database:/var/lib/mysql
+    networks:
+      - api-network
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:5.0.1
+    links:
+      - database
+    restart: always
+    environment:
+      PMA_HOST: database
+      PMA_USER: root
+      PMA_PASSWORD: bnext
+    ports:
+      - "8080:80"
+    networks:
+      - api-network
+  api:
+    build:
+      context: .
+    volumes:
+      - /usr/src/app/dist
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    ports:
+      - 3000:3000
+    command: "yarn start"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - api-network
+
+volumes:
+  database:
+
+networks:
+  api-network:
+    driver: bridge
