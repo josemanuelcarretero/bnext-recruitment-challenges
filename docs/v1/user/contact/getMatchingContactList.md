@@ -62,8 +62,8 @@ Get all matching contacts between two registered users in the backend
     "error": "invalid_url_parameter",
     "message": "There are one or more errors in the url parameters",
     "fixList": {
-        "id": [
-            "id is not a numeric string"
+        "id1": [
+            "id1 is not a integer"
         ]
     }
 }
