@@ -30,6 +30,20 @@ services:
       - "8080:80"
     networks:
       - api-network
+  api:
+    build:
+      context: .
+    volumes:
+      - /usr/src/app/dist
+      - /usr/src/app/node_modules
+      - .:/usr/src/app
+    ports:
+      - 3000:3000
+    command: "yarn start"
+    environment:
+      - NODE_ENV=production
+    networks:
+      - api-network
 
 volumes:
   database:
